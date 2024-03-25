@@ -5,6 +5,12 @@ typedef struct contato Contato;
 
 /* Funções Exportadas */
 
+/* Função inicializaTabela
+- Preenche todos os valores de nome dos contatos
+  com strings vazias
+*/
+void inicializaTabela();
+
 /* Função geraChave:
  - Gera uma chave para o contato inserido
 */
@@ -35,4 +41,4 @@ void inserir();
 
    onde i é o número de tentativas de inserir a chave.
 */
-int sondagemQuadratica(int indice);
+int sondagemQuadratica(int posicao, int tentativas);

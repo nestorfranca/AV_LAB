@@ -17,6 +17,14 @@ typedef struct contato {
 } Contato;
 Contato contatos[TAM];
 
+void inicializaTabela()
+{
+    int i;
+    for (i = 0; i < TAM; i++)
+    {
+        strcpy(contatos[i].nome, "");
+    }
+}
 
 int geraChave(Contato c)
 {
@@ -52,7 +60,6 @@ int hash(int chave)
     return endereco;
 }
 
-
 int contadorBit(int num)
 {
     int num_bits = 0;
@@ -86,11 +93,22 @@ void inserir()
     int chave = geraChave(c);
     int posicao = hash(chave);
 
-    while (strcmp(contatos[posicao].nome, "") != 0)
-        posicao = sondagemQuadratica(posicao);
+    int count = 0;
+    while (strcmp(contatos[posicao].nome, "") != 0) 
+    {
+        posicao = sondagemQuadratica(posicao, count);
+        count++;
+    }
+
+    contatos[posicao] = c;
 }
 
-int sondagemQuadrada(int indice)
+int sondagemQuadratica(int posicao, int tentativas)
 {
+    int c1, c2; // a definir
 
+    // px  <-    px   +     c1(i)       +          c2*i²
+    posicao = posicao + c1*(tentativas) + c2*(tentativas*tentativas);
+
+    return posicao % TAM; /* caso nova posição exceda o tamanho, o modulo é usado */
 }
