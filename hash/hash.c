@@ -15,8 +15,8 @@ typedef struct contato {
     char telefone[15];
     char email[50];
 } Contato;
-
 Contato contatos[TAM];
+
 
 int geraChave(Contato c)
 {
@@ -31,7 +31,6 @@ int geraChave(Contato c)
     return chave;
 }
 
-// função hash, pelo método da multiplicação
 int hash(int chave)
 {
     long long quad_chave, bits_chave, bits_endereco;
@@ -52,6 +51,7 @@ int hash(int chave)
 
     return endereco;
 }
+
 
 int contadorBit(int num)
 {
@@ -80,11 +80,11 @@ Contato lerContato() {
     fgets(c.email, 50, stdin);
 }
 
-// inserir um contato na tabela
-void inserir() {
+void inserir()
+{
     Contato c = lerContato();
     int chave = geraChave(c);
-    int posicao = hash(posicao);
+    int posicao = hash(chave);
 
     while (strcmp(contatos[posicao].nome, "") != 0)
         posicao = sondagemQuadratica(posicao);

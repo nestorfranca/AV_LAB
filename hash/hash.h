@@ -22,7 +22,10 @@ int hash(int chave);
 */
 int contadorBit(int num);
 
-
+/* Função inserir
+ - Adiciona uma nova chave na tabela Hash
+*/
+void inserir();
 
 /* Função sondagemQuadratica
  - Tratamento de colisãos entre as chaves. Busca uma
