@@ -1,1 +1,0 @@
-#include "sond_quadratica.h"
