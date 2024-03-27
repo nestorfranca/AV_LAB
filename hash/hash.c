@@ -4,25 +4,25 @@
 #include "hash.h"
 
 /* Fator de Carga = 50%
-   TAM <= 2*[número de elementos a serem inseridos]
-   TAM <= 20000
-   (Escolhe o valor primo mais próximo)
+   TAM = 2^n < 5000
+   TAM = 4096
 */ 
-#define TAM 19997
+#define TAM 4096
 
 typedef struct contato {
+    int tag;
     char nome[35];
     char telefone[15];
     char email[50];
 } Contato;
-Contato contatos[TAM];
+// Contato contatos[TAM];
 
-void inicializaTabela()
+void inicializaTabela(Contato* c)
 {
     int i;
     for (i = 0; i < TAM; i++)
     {
-        strcpy(contatos[i].nome, "");
+        c[i].tag = 0;
     }
 }
 
@@ -50,12 +50,15 @@ int hash(int chave)
 
     // 2. Tamanho em bits da chave e do endereço:
     bits_chave = contadorBit(quad_chave);
+    // printf("%lld\n", bits_chave);
+
     bits_endereco = contadorBit(TAM);
+    // printf("%lld\n", bits_endereco);
 
     // 3. gerar o endereço, cortando os bits dos extremos,
-    // até que fique do tamanho adequado ao endereço:
-    endereco = quad_chave >> ((bits_chave/2) - (bits_endereco/2));  /* corta o excesso à direita */
-    endereco = endereco % (1 >> bits_endereco);                     /* corta o excesso à direita */
+    // para que fique do tamanho adequado ao endereço:
+    endereco = quad_chave >> ((bits_chave - bits_endereco)/2);  /* corta o excesso à direita */
+    endereco = endereco % (1 << (bits_endereco-1));                 /* corta o excesso à esquerda */
 
     return endereco;
 }
@@ -68,47 +71,110 @@ int contadorBit(int num)
         num_bits++;
         num = num >> 1; // Desloca os bits para a direita (divide por 2)
     }
-    if (num_bits%2 != 0) num_bits++;
 
     return num_bits;
 }
 
-// função para ler e retornar um contato:
-Contato lerContato() {
-    Contato c;
-    printf("Digite a nome: ");
-    fgets(c.nome, 35, stdin);
-    // scanf(" %[^\n]", c.nome);
-    // scanf("%*c"); // limpa o buffer do enter
-    printf("\nDigite o telefone: ");
-    fgets(c.telefone, 15, stdin);
-
-    printf("\nDigite o email: ");
-    fgets(c.email, 50, stdin);
-}
-
-void inserir()
+void inserir(Contato *arr_contatos, Contato contato, FILE *fl)
 {
-    Contato c = lerContato();
-    int chave = geraChave(c);
+    int limite = 30000;
+    int chave = geraChave(contato);
+    // printf("%d\n", chave);
+    
     int posicao = hash(chave);
+    // printf("%d\n", posicao);
 
     int count = 0;
-    while (strcmp(contatos[posicao].nome, "") != 0) 
-    {
+    
+    static int count2, i = 1;
+
+    while (arr_contatos[posicao].tag == 1 && count < limite) 
+    {   
         posicao = sondagemQuadratica(posicao, count);
         count++;
+        count2++;
     }
+    // if (count == limite) {
+    fprintf(fl, "%d -  %s\n", i++, contato.nome);
+    fprintf(fl, "%d - Tentativas: ", i++);
 
-    contatos[posicao] = c;
+    fprintf(fl, "%d\n", count);
+    fprintf(fl, "%d\n", count2);
+    // fprintf(fl, "%d\n\n", i);
+    // }
+
+    arr_contatos[posicao] = contato;
+    arr_contatos[posicao].tag = 1;
+
 }
 
 int sondagemQuadratica(int posicao, int tentativas)
 {
-    int c1, c2; // a definir
+    int c1 = 1, c2 = 3; // a definir
 
     // px  <-    px   +     c1(i)       +          c2*i²
     posicao = posicao + c1*(tentativas) + c2*(tentativas*tentativas);
 
     return posicao % TAM; /* caso nova posição exceda o tamanho, o modulo é usado */
+}
+
+int totalContatos(Contato *contatos)
+{
+    int i, count = 0;
+    for (i = 0; i < TAM; i++)
+    {
+        if (contatos[i].tag == 1)
+            count++;
+    }
+    
+    return count;
+}
+
+void preencheContato(Contato *contatos)
+{
+    Contato c;
+
+
+    FILE *teste = fopen("teste.txt", "wt");
+    FILE *fl = fopen("todosOsContatos.txt", "rt");
+    if (fl == NULL) exit(1);
+
+    char *nome;
+    char *tel;
+    char *email;
+
+    nome  = (char *)malloc(35 * sizeof(char));
+    tel   = (char *)malloc(20 * sizeof(char));
+    email = (char *)malloc(50 * sizeof(char));
+
+    int i, total=0;
+    for (i = 0; i < 10000; i++) {
+
+        total = totalContatos(contatos);
+        if (total == 4096) return;
+        printf("%d\n", total);
+        fscanf(fl, "Nome: %[A-Z. a-z]\n", nome);
+        fscanf(fl, "Telefone: %[(0-9) -0-9]\n", tel);
+        fscanf(fl, "Email: %s\n", email);
+        fscanf(fl, "\n");
+
+        // printf("%d\n", i);
+        // printf("%s\n", nome);
+        // printf("%s\n", tel);
+        // printf("%s\n", email);
+
+        strcpy(c.nome, nome);
+        strcpy(c.telefone, tel);
+        strcpy(c.email, email);
+
+        // contatos[i] = c;
+
+        inserir(contatos, c, teste);
+
+
+    }
+    fclose(teste);
+    fclose(fl);
+
+    
 }
