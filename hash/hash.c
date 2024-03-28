@@ -148,7 +148,7 @@ void preencheContato(Contato *contatos)
     email = (char *)malloc(50 * sizeof(char));
 
     int i, total=0;
-    for (i = 0; i < 10000; i++) {
+    for (i = 0; i < 2000; i++) {
 
         total = totalContatos(contatos);
         if (total == 4096) return;
@@ -193,7 +193,7 @@ Contato *buscar_contatos(Contato *contatos, char *nome, char *telefone, char *em
 }
 */
 
-*/
+/*
 void removerContato(Contato *arr_contatos, char *nome) {
     int chave = geraChave(nome);
     int posicao = hash(chave);
