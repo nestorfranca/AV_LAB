@@ -178,7 +178,7 @@ void preencheContato(Contato *contatos)
 
     
 }
-
+/*
 Contato *buscar_contatos(Contato *contatos, char *nome, char *telefone, char *email)
 {
    while (contatos != NULL)
@@ -191,3 +191,4 @@ Contato *buscar_contatos(Contato *contatos, char *nome, char *telefone, char *em
    }
    return NULL;
 }
+*/

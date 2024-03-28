@@ -50,4 +50,4 @@ int totalContatos(Contato *contatos);
 
 void preencheContato(Contato *contatos);
 
-Contato *buscar_contatos(Contato *contatos, char *nome, char *telefone, char *email);
+//Contato *buscar_contatos(Contato *contatos, char *nome, char *telefone, char *email);

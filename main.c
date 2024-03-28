@@ -16,7 +16,7 @@ int main(void) {
         printf("TEL: %s\n", contatos[i].telefone);
         printf("EMAIL: %s\n\n", contatos[i].email);
     }
-    
+   /* 
     Contato *contato_encontrado = buscar_contatos(contatos, nome, telefone, email);
 
     if (contato_encontrado != NULL) {
@@ -26,7 +26,7 @@ int main(void) {
     } else {
         printf("Contato não encontrado.\n");
     }
-    
+ */   
     // Contato teste_1 = ;
 
     // printf("%d", contadorBit(4096));
