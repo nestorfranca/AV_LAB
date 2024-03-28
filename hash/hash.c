@@ -192,3 +192,27 @@ Contato *buscar_contatos(Contato *contatos, char *nome, char *telefone, char *em
    return NULL;
 }
 */
+
+*/
+void removerContato(Contato *arr_contatos, char *nome) {
+    int chave = geraChave(nome);
+    int posicao = hash(chave);
+
+    if (strcmp(arr_contatos[posicao].nome, nome) == 0) {
+        arr_contatos[posicao].tag = 0;
+        return;
+    }
+
+    int count = 0;
+    while (arr_contatos[posicao].tag != 0 && count < TAM) {
+        posicao = sondagemQuadratica(posicao, count);
+        if (strcmp(arr_contatos[posicao].nome, nome) == 0) {
+            arr_contatos[posicao].tag = 0;
+            return;
+        }
+        count++;
+    }
+
+    printf("Contato '%s' não encontrado na tabela.\n", nome);
+}
+*/
