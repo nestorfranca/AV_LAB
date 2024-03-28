@@ -17,6 +17,15 @@ int main(void) {
         printf("EMAIL: %s\n\n", contatos[i].email);
     }
     
+    Contato *contato_encontrado = buscar_contatos(contatos, nome, telefone, email);
+
+    if (contato_encontrado != NULL) {
+        printf("Contato encontrado: %s\n", contato_encontrado->nome);
+        printf("TEL: %s\n", contato_encontrado->telefone);
+        printf("EMAIL: %s\n", contato_encontrado->email);
+    } else {
+        printf("Contato não encontrado.\n");
+    }
     
     // Contato teste_1 = ;
 

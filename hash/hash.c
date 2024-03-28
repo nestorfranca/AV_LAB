@@ -178,3 +178,16 @@ void preencheContato(Contato *contatos)
 
     
 }
+
+Contato *buscar_contatos(Contato *contatos, char *nome, char *telefone, char *email)
+{
+   while (contatos != NULL)
+   {
+      if (strcmp(contatos->nome, nome) == 0 && strcmp(contatos->telefone, telefone) == 0 && strcmp(contatos->email, email) == 0)
+      {
+         return contatos;
+      }
+      contatos = contatos->prox;
+   }
+   return NULL;
+}
