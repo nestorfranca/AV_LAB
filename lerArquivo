@@ -4,6 +4,11 @@
 int main() {
 
   FILE *f = fopen("todosOsContatos.txt", "r");
+  if (f == NULL){
+    printf("Erro ao abrir o arquivo. \n")
+    return 1;
+  }
+
   char *nome;
   char *tel;
   char *email;
@@ -25,4 +30,11 @@ int main() {
     printf("%s\n", email);
 
   }
+
+  free(nome);
+  free(tel);
+  free(email);
+
+  fclose(f);
+  
 }
