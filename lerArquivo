@@ -36,5 +36,10 @@ int main() {
   free(email);
 
   fclose(f);
+<<<<<<< HEAD
 
 }
+=======
+  
+}
+>>>>>>> d05abea67a08ed5deb696feb9e34197d67171426
