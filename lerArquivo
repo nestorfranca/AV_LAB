@@ -5,7 +5,7 @@ int main() {
 
   FILE *f = fopen("todosOsContatos.txt", "r");
   if (f == NULL){
-    printf("Erro ao abrir o arquivo. \n")
+    printf("Erro ao abrir o arquivo. \n");
     return 1;
   }
 
