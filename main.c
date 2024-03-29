@@ -5,14 +5,19 @@
 Contato contatos[TAM];
 
 int main(void) {
+    inicializaTabela(contatos);
+    importaContato(contatos);
     
-    int var = menu_principal();
-    // inicializaTabela(contatos);
-    // preencheContato(contatos);
+    int var;
+    do {
+        var = menu_principal();
+    } while (var != '5');
+    
 
     // int i;
     // for (i = 0; i < TAM; i++)
     // {
+    //     printf("NOME: %s\n", contatos[i].nome);
     //     printf("NOME: %s\n", contatos[i].nome);
     //     printf("TEL: %s\n", contatos[i].telefone);
     //     printf("EMAIL: %s\n\n", contatos[i].email);

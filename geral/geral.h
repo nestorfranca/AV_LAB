@@ -36,3 +36,8 @@ void string_copy(char *dest, char *src);
     Gera um atraso, em milissegundos, na resposta do programa.
 */
 void delay(double milissegundos);
+
+void alert(int cod);
+
+void alert_msg(void);
+
