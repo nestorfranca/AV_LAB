@@ -1,4 +1,5 @@
-# Tabela de Dispersão para Armazenamento de Contatos
+# 1. Tabela de Dispersão (Hash) para Armazenamento de Contatos
+
 ## Introdução
 Este projeto consiste na implementação de uma tabela de dispersão em C para armazenamento de contatos. A tabela de dispersão, também conhecida como hash table, é uma estrutura de dados eficiente para armazenar e recuperar informações rapidamente, usando uma função de hash para mapear chaves para valores.
 
@@ -9,16 +10,30 @@ O armazenamento eficiente de uma grande quantidade de informações, como contat
 Neste projeto, implementamos uma tabela de dispersão para armazenar contatos, cada um associado a um nome, telefone e e-mail. A tabela de dispersão é inicializada com um tamanho fixo e usa o método da multiplicação para calcular o índice onde cada contato será armazenado. Além disso, utilizamos sondagem quadrática para lidar com colisões entre as chaves.
 
 ## Vantagens
-Rápido acesso aos dados: A função de hash permite acesso rápido aos dados, tornando as operações de inserção, remoção e busca eficientes.
-Armazenamento otimizado: A tabela de dispersão é capaz de armazenar grandes volumes de dados de forma eficiente, sem desperdiçar espaço.
-Flexibilidade: A estrutura de uma tabela de dispersão pode ser adaptada para diferentes tipos de dados e necessidades específicas do projeto.
+- Rápido acesso aos dados: A função de hash permite acesso rápido aos dados, tornando as operações de inserção, remoção e busca eficientes.
+- Armazenamento otimizado: A tabela de dispersão é capaz de armazenar grandes volumes de dados de forma eficiente, sem desperdiçar espaço.
+- Flexibilidade: A estrutura de uma tabela de dispersão pode ser adaptada para diferentes tipos de dados e necessidades específicas do projeto.
 
 ## Desvantagens
-Colisões: Em casos de colisões, onde duas chaves resultam no mesmo índice, é necessário lidar com essas situações de forma eficaz para evitar degradação do desempenho.
-Tamanho fixo: O tamanho da tabela de dispersão é fixo, o que pode levar a problemas de desempenho se não for escolhido adequadamente.
-Função de hash: Uma função de hash ineficiente pode resultar em distribuição desigual dos dados na tabela, prejudicando o desempenho das operações.
+- Colisões: Em casos de colisões, onde duas chaves resultam no mesmo índice, é necessário lidar com essas situações de forma eficaz para evitar degradação do desempenho.
+- Tamanho fixo: O tamanho da tabela de dispersão é fixo, o que pode levar a problemas de desempenho se não for escolhido adequadamente.
+- Função de hash: Uma função de hash ineficiente pode resultar em distribuição desigual dos dados na tabela, prejudicando o desempenho das operações.
 
-# Funções Implementadas
+# 2. Módulos utilizados
+## hash.h
+Neste módulo, implementamos o tipo estrutura _Contato_, que define as informações de interesse em seus parâmetros, bem como todas as principais funções referentes à criação e manipulação da tabela Hash.
+```c
+typedef struct contato {
+    int tag;
+    char nome[35];
+    char telefone[15];
+    char email[50];
+} Contato;
+```
+##  geral.h
+Nesse módulo, implementamos o conjunto das funções usandas na interface do menu para a tabela Hash e nas tratativas realizadas.
+
+# 3. Funções Implementadas
 ## Função inicializaTabela
 * **Descrição:** Função Inicializa a tabela de dispersão.
 ```c
