@@ -14,7 +14,12 @@ int main(void) {
     // do {
     //     var = menu_principal();
     // } while (var != '5');
+    int var;
+    do {
+        var = menu_principal(contatos);
+    } while (var != '5');
     
+    // preencheContato(contatos);
 
     // int i;
     // for (i = 0; i < TAM; i++)

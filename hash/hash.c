@@ -124,16 +124,35 @@ int totalContatos(Contato *contatos)
     return count;
 }
 
-void preencheContato(Contato *contatos, char *nome, char *tel, char *email)
+void preencheContato(Contato *contatos)
 {
     Contato c;
     FILE* teste;
+    teste = fopen("teste.txt", "rt+");
+    cabecalho("\t\t", "CADASTRO\t");
     
+    char *nome, *tel, *email;
+    nome  = (char *)malloc(35 * sizeof(char));
+    tel   = (char *)malloc(20 * sizeof(char));
+    email = (char *)malloc(50 * sizeof(char));
+
+    printf("Digite o nome: ");
+    scanf(" %34[A-Z. a-z]", nome);
+    printf("Digite o telefone (sem \"()\"): ");
+    scanf(" %19[(0-9) -0-9]", tel);
+    printf("Digite o email: ");
+    scanf(" %49[^\n]", email);
+
     strcpy(c.nome, nome);
     strcpy(c.telefone, tel);
     strcpy(c.email, email);
 
     inserir(contatos, c, teste);
+
+    // cabecalho("\t\t", "CADASTRO\t");
+    alert(9);
+    alert_msg();
+    delay(1000);
 }
 
 void importaContato(Contato *contatos)
