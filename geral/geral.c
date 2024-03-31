@@ -301,12 +301,7 @@ int contaNomes(char **lista, int origem, char inicial)
 {
     int i, num_nomes = 0;
     for (i = origem; i < TAM; i++)
-    {
-<<<<<<< HEAD
-        if (lista[i][0] == inicial) 
-=======
-        if (lista[i] != NULL && lista[i][0] == inicial)
->>>>>>> bae89303162196a6ef7d6fb20e82e7d8b4a51162
+        if (lista[i] != NULL && lista[i][0] == inicial){
             num_nomes++;
     }   
 
