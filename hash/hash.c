@@ -14,7 +14,7 @@
 typedef struct contato {
     int tag;
     char nome[35];
-    char telefone[15];
+    char telefone[25];
     char email[50];
 } Contato;
 // Contato contatos[TAM];
@@ -82,6 +82,8 @@ void inserir(Contato *arr_contatos, Contato contato, FILE *fl)
 
     int count = 0;
     while (arr_contatos[posicao].tag != 0 && count < LIMITE_TESTE) {   
+        if (strcmp(arr_contatos[posicao].nome, contato.nome) == 0)
+            break;
         posicao = sondagemQuadratica(posicao, count);
         count++;
         if (count == LIMITE_TESTE)
@@ -129,11 +131,11 @@ void preencheContato(Contato *contatos)
     Contato c;
     FILE* teste;
     teste = fopen("teste.txt", "rt+");
-    cabecalho("\t\t", "CADASTRO\t");
+    cabecalho("\t\t", "CADASTRO\t", "");
     
     char *nome, *tel, *email;
     nome  = (char *)malloc(35 * sizeof(char));
-    tel   = (char *)malloc(20 * sizeof(char));
+    tel   = (char *)malloc(25 * sizeof(char));
     email = (char *)malloc(50 * sizeof(char));
 
     printf("Digite o nome: ");
@@ -168,7 +170,7 @@ void importaContato(Contato *contatos)
 
     char *nome, *tel, *email;
     nome  = (char *)malloc(35 * sizeof(char));
-    tel   = (char *)malloc(20 * sizeof(char));
+    tel   = (char *)malloc(25 * sizeof(char));
     email = (char *)malloc(50 * sizeof(char));
 
     int i;
@@ -176,7 +178,7 @@ void importaContato(Contato *contatos)
         if (totalContatos(contatos) == TAM) break;
 
         fscanf(fl, "Nome: %34[A-Z. a-z]\n", nome);
-        fscanf(fl, "Telefone: %19[(0-9) -0-9]\n", tel);
+        fscanf(fl, "Telefone: %24[(0-9) -0-9]\n", tel);
         fscanf(fl, "Email: %49s\n", email);
         fscanf(fl, "\n");
 
@@ -191,7 +193,7 @@ void importaContato(Contato *contatos)
     fclose(teste); fclose(fl);
 }
 
-int buscarContatos(Contato* arr_contatos, char* nome)
+int buscarContatos(Contato *arr_contatos, char *nome)
 {
     int chave = geraChave(nome);
     unsigned long long posicao = hash(chave);
@@ -208,8 +210,9 @@ int buscarContatos(Contato* arr_contatos, char* nome)
         count++;
     }
 
-    printf("Contato '%s' não encontrado na tabela.\n", nome);
-    return 0;
+    alert(-1);
+    // printf("Contato '%s' não encontrado na tabela.\n", nome);
+    return -1;
 }
 
 void removerContato(Contato *arr_contatos, char* nome)
@@ -223,4 +226,49 @@ void removerContato(Contato *arr_contatos, char* nome)
     }
 
     printf("Contato '%s' não encontrado na tabela.\n", nome);
+}
+
+int contatoConsulta(Contato *arr_contatos, int posicao)
+{
+    Contato c = arr_contatos[posicao];
+
+    int op_cons;
+    while(1)
+    {
+        cabecalho("CATALOGO\t\t\t\t\t", "CONSULTA CONTATO\t", "");
+
+        printf("%-35s\t%-20s\t%-50s\n", "NOME", "TELEFONE", "EMAIL");
+        printf("%-35s\t%-20s\t%-50s\n", c.nome, c.telefone, c.email);
+        printf("\n============================================================================================================================================\n");
+        
+
+        printf(">>>[1] Excluir\n");
+        printf(">>>[2] Voltar\n");
+        printf(">>>[3] Voltar ao menu");
+
+        fflush(stdin);
+
+        alert_msg();
+        printf("\nEscolha uma opcao: ");
+        op_cons = teste_input();
+
+        switch (op_cons)
+        {
+            case '1':
+                removerContato(arr_contatos, c.nome);
+                return 0;
+
+            case '2':
+                alert(0);
+                return 1;
+
+            case '3':
+                alert(0);
+                return 0;
+
+            default:
+                alert(1);
+                break;   
+        }
+    }
 }

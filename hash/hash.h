@@ -65,9 +65,11 @@ void importaContato(Contato *contatos);
  - busca e retorna a posição do contato com o nome
    inserido.
 */
-int buscarContatos(Contato* arr_contatos, char* nome);
+int buscarContatos(Contato* arr_contatos, char *nome);
 
 /* Função removerContato
  - Remove o valor inserido
 */
-void removerContato(Contato *arr_contatos, char* nome);
+void removerContato(Contato *arr_contatos, char *nome);
+
+int contatoConsulta(Contato *arr_contatos, int posicao);
