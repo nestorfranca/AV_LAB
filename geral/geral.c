@@ -83,7 +83,6 @@ int teste_formato(char *str)
     }
     if (negativo == 1)
     {
-        printf("oi\n");
         return -1;          /* é número negativo */
     }
 
@@ -303,7 +302,7 @@ int contaNomes(char **lista, int origem, char inicial)
     int i, num_nomes = 0;
     for (i = origem; lista[i] != NULL; i++)
     {
-        if (lista[i][0] == inicial)
+        if (lista[i][0] == inicial) 
             num_nomes++;
     }   
 
