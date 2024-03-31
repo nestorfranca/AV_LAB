@@ -43,12 +43,12 @@ char *clear(void)
     #endif
 }
 
-void cabecalho(char *pagina, char *titulo)
+void cabecalho(char *pagina, char *titulo, char *num_pag)
 {
     system(clear());
-    printf("===============================================================================\n");
-    printf("\t%s\t%s\t\t\n", pagina, titulo);
-    printf("===============================================================================\n");
+    printf("============================================================================================================================================\n");
+    printf("\t%s\t%s\t\t%s\n", pagina, titulo, num_pag);
+    printf("============================================================================================================================================\n");
 }
 
 int teste_input(void)
@@ -67,10 +67,34 @@ int teste_input(void)
     return 0;       /* input invalido */
 }
 
-int menu_principal(Contato *contatos) {
-    int opcao;
+int teste_formato(char *str)
+{
+    int i;
+    int negativo = 0;
+    for (i = 0; str[i] != '\0'; i++)    /* verifica cada caracter */
+    {
+        if (!(str[i] >= '0' && str[i] <= '9'))  /* verifica se o caracter é numérico */
+        {   
+            if (i == 0 && str[i] == '-')
+                negativo++;
+            else
+                return 0;   /* é string */
+        }
+    }
+    if (negativo == 1)
+    {
+        printf("oi\n");
+        return -1;          /* é número negativo */
+    }
 
-    cabecalho("\t\t", "MENU INICIAL\t");
+    return 1;               /* é número positivo */
+}
+
+int menu_principal(Contato *contatos) {
+    int opcao, op_i;
+    char dado[35];
+
+    cabecalho("\t\t\t\t\t\t", "MENU INICIAL\t", "");
     
     printf(">>> [1] ADICIONAR\n");
     printf(">>> [2] REMOVER\n");
@@ -83,169 +107,164 @@ int menu_principal(Contato *contatos) {
     opcao = teste_input();
 
     switch (opcao) {
-        case '1':
+        case '1': {
             printf("\nAdicionando Contato...");
             delay(ATRASO);
             preencheContato(contatos);
             break;
-
-        case '2':
+        }
+        case '2': {
             printf("\nRemovendo Contato...");
             delay(ATRASO);
 
             break;
+        }
+        case '3': {
+            printf("\nBuscando Contatos..."); delay(ATRASO);
+            
+            while(1) {
+                //cria lista temporária, para visualização:
+                char **lista;
+                lista = criaCatalogo(contatos, TAM);
 
-        case '3':
-            printf("\nBuscando Contatos...");
-            buscarContatos(contatos);
-            delay(ATRASO);
+                cabecalho("\t\t\t\t\t\t", "BUSCAR CONTATOS\t", "");
+                if (imprimeCatalogo(contatos, lista)) break;
+            }
 
             break;
-        
-        case '4':
+        }
+        case '4': {
         
             break;
-        
-        case '5':
+        }
+        case '5': {
             printf("\nEncerrando programa...\n");
             delay(ATRASO);
             break;
-
-        default:
-            // alert(1);
+        }
+        default: {
+            alert(1);
             break;
+        }
     }
     return opcao;
 }
 
-void imprimeCatalogo(Contato *arr_contatos, int pagina)
+int imprimeCatalogo(Contato *arr_contatos, char **catalogo)
 {
-    char **lista;
-    
-    lista = criaCatalogo(arr_contatos, TAM);
-    
-    int letra = 'A';
-    int inicio_pag[20] = {0, 240, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-    int id, i, j/*, id_pag = 240*pagina*/;
-    // while ((letra - 'A') < 26) {
-    int qnt_nomes;
-    int total_linhas = 0, count = 0, count_ant = 0;
-    int linhas_por_letra;
+    // variáveis usadas na impressão do catálogo:
+    int inicio_pag[55] = {0};
+    int id, i, j, letra, qnt_nomes;
+    int linhas, colunas, count, count_ant;
+    int linhas_por_letra, pagina = 0;
+    char pag[10];
 
-    // count = inicio_pag[pagina]; 
-    while (total_linhas < 40) {
+    // variável para o menu de opções:
+    int op_lista, posicao;
+    char ch_lista[100];
+
+    while (1) {
+        // imprime cabeçacho:
+        sprintf(pag, "Pagina %02d", pagina+1);
+        cabecalho("BUSCAR CONTATOS\t\t\t\t\t", "CATALOGO\t\t\t\t", pag);
         
-        printf(TXT_green"\n%c\n"TXT_reset, letra);
+        // condições iniciais:
+        linhas = 0, colunas = 4, count = 0, count_ant = 0;
+        letra = catalogo[inicio_pag[pagina]][0];
+        // imprime página:
+        while (linhas < 20) {
+            if (letra <= 'Z')
+                printf(TXT_green"%c\n"TXT_reset, letra);
 
-        qnt_nomes = contaNomes(lista, inicio_pag[pagina], letra);
-        // printf("%d\n", qnt_nomes);
-        // printf("%d\n", total_linhas);
+            // contabiliza quantos nomes começam com a mesma letra inicial:
+            qnt_nomes = contaNomes(catalogo, inicio_pag[pagina], letra);
+            // verifica quantas linhas devem ser impressas por letra, na página:
+            if (qnt_nomes > (80 - colunas*linhas))
+                linhas_por_letra = (80 - colunas*linhas)/colunas;
+            else
+                linhas_por_letra = (qnt_nomes/colunas)+1;
 
-        if (qnt_nomes > (240 - 6*total_linhas))
-            linhas_por_letra = (240 - 6*total_linhas)/6;
-        else
-            linhas_por_letra = (qnt_nomes/6)+1;
-
-        // printf("%d\n", linhas_por_letra);
-        // printf("%d\n", count);
-        for (i = 0; i < linhas_por_letra; i++)
-        {
-            // printf("%d - ",  i);
-            if (total_linhas == 40) break;
-            
-            // printf("%d - ", id);
-            for (j = 0; j < 6; j++)
-            {
-                id = inicio_pag[pagina] + count_ant + (linhas_por_letra)*j + i;
-                if ((id < TAM) && (lista[id][0] == letra)) {
-                    printf("%-25s", lista[id]);
-                    count++;
+            // imprime as linhas contabilizadas:
+            for (i = 0; i < linhas_por_letra; i++) {
+                // finaliza ciclo, caso não haja nomes, ou com todas as linhas impressas:
+                if (qnt_nomes == 0 || linhas == 20) break;
+                
+                for (j = 0; j < colunas; j++) {
+                    id = inicio_pag[pagina] + count_ant + (linhas_por_letra)*j + i;
+                    if ((catalogo[id] != NULL) && (catalogo[id][0] == letra)) {
+                        printf("%-35s", catalogo[id]);
+                        count++;
+                    }
                 }
+                printf("\n");
+                linhas++;   
             }
-            printf("\n");
-            total_linhas++;   
-        }
-        // printf("%d\n", i);
 
-        if (i == linhas_por_letra) {
-            total_linhas += 2;
-            letra++;
-            
-            count_ant = count;
+            // se ciclo terminou sem completar a página, incrementa a letra e continua:
+            if (linhas < 20) {
+                printf("\n");
+                
+                linhas += 2;
+                if (letra >= 'Z')
+                    printf("\n");
+                letra++;
+                
+                // nomes que já foram impressos na página:
+                count_ant = count;
+            }
         }
-        // printf("%d\n", total_linhas);
+        
+        // marca o início da próxima página:
+        if ((pagina+1) < 55)
+            inicio_pag[pagina+1] = inicio_pag[pagina] + count;
+        
 
+        // MENU DE OPÇÕES:
+        printf("\n>>>[1] Pagina Anterior\n");
+        printf(">>>[2] Pagina Seguinte\n");
+        printf(">>>[3] Voltar\n");
+
+        alert_msg();
+        printf("\nEscolha uma opcao (ou escreva o nome completo do contato): ");
+        
+        i = 0;
+        while ((ch_lista[i] = getchar()) != '\n') i++;
+        ch_lista[i] = '\0';
+
+        if (strlen(ch_lista) > 0) {                 /* verifica se está vazio */
+            if (teste_formato(ch_lista) != 0) {     /* verifica se é um número */
+                op_lista = atoi(ch_lista);
+                switch (op_lista) {
+                    case 1:
+                        if (pagina > 0)
+                            pagina--;
+                        else
+                            alert(2);
+                        break;
+
+                    case 2:
+                        if (pagina < 54)
+                            pagina++;
+                        else
+                            alert(3);
+                        break;
+
+                    case 3:
+                        alert(0);   /* retorna ao menu de busca */
+                        return 1;
+
+                    default:
+                        alert(1);   /* opção inválida */
+                        break;   
+                }
+            } else {                                /* buscar por nome */
+                posicao = buscarContatos(arr_contatos, ch_lista);
+                if (posicao != -1)
+                    contatoConsulta(arr_contatos, posicao);
+            }
+        }
     }
-    
-    if ((pagina+1) < 20)
-        inicio_pag[pagina+1] = inicio_pag[pagina] + count;
-
-    
-
-
-    // printf("%d", qnt_nomes);
-
-    // int id;
-    // int count = 0;
-    // for (i = 0; i < 40; i++)
-    // {
-    //     if (i < total_linhas) {
-    //         if (id_pag == 0 && i == 0)
-    //             printf(TXT_green"\n%c\n"TXT_reset, letra);
-                        
-    //         // printf("%3d - ", i);
-    //         for (j = 0; j < 6; j++)
-    //         {   
-    //             id = id_pag + total_linhas*j + i + count;
-
-    //             if ((id < TAM) && (lista[id][0] == letra)) {
-    //                 // if (id == 0 || (lista[id][0] != lista[id-1][0])) {
-    //                 //     if ((id != 0) && (lista[id][0] != lista[id-1][0])) letra++;
-                        
-    //                 //     printf(TXT_green"\n%c\n"TXT_reset, letra);
-    //                 // }
-                        
-    //                 printf("%-25s", lista[id]);
-    //             }
-    //         }
-    //         printf("\n");
-        
-    //     } 
-    //     // else {
-    //     //     count = qnt_nomes;
-    //     //     if (i == total_linhas) {
-    //     //         letra++;
-    //     //         printf(TXT_green"\n%c\n"TXT_reset, letra);
-    //     //     }
-
-    //     //     printf("\n");
-            
-    //     //     // printf("%3d - ", i);
-    //     //     for (j = 0; j < 6; j++)
-    //     //     {   
-    //     //         id = count + id_pag + (40 - total_linhas)*j + i;
-
-    //     //         if ((id < TAM) && (lista[id][0] == letra)) {
-    //     //             // if (id == 0 || (lista[id][0] != lista[id-1][0])) {
-    //     //             //     if ((id != 0) && (lista[id][0] != lista[id-1][0])) letra++;
-                        
-    //     //             //     printf(TXT_green"\n%c\n"TXT_reset, letra);
-    //     //             // }
-                        
-    //     //             printf("%-25s", lista[id]);
-    //     //         }
-    //     //     }
-    //     //     // printf("\n");
-    //     // }
-
-
-        
-        
-    //     printf("%d - %-25s\n",i, lista[i]);
-    //     printf("%3d - %-25s %-25s %-25s %-25s\n",i, lista[id_pag + i], lista[id_pag + 40+i], lista[id_pag + 80+i], lista[id_pag + 120+i]);
-    // }
-    
-    free(lista);
+    free(catalogo);
 }
 
 char **criaCatalogo(Contato *arr_contatos, int n)
@@ -282,7 +301,7 @@ char **criaCatalogo(Contato *arr_contatos, int n)
 int contaNomes(char **lista, int origem, char inicial)
 {
     int i, num_nomes = 0;
-    for (i = origem; i < TAM; i++)
+    for (i = origem; lista[i] != NULL; i++)
     {
         if (lista[i][0] == inicial)
             num_nomes++;
@@ -290,6 +309,7 @@ int contaNomes(char **lista, int origem, char inicial)
 
     return num_nomes;
 }
+
 void alert(int cod)
 {
     alert_cod = cod;
@@ -302,32 +322,11 @@ void alert_msg(void)
     
     // alerta de formato: 
     else if (alert_cod == 1) printf(TXT_yellow"\nInsira uma opcao valida!\n"TXT_reset);
-    else if (alert_cod == 2) printf(TXT_red"\nFormato invalido!\n"TXT_reset);
-    else if (alert_cod == 3) printf(TXT_red"\nErro! Tamanho maximo excedido.\n"TXT_reset);
-    else if (alert_cod == 4) printf(TXT_yellow"\nTamanho invalido! O CPF deve conter 11 digitos.\n"TXT_reset);
-    else if (alert_cod == 5) printf(TXT_yellow"\nO CPF deve conter apenas numeros.\n"TXT_reset);
-    else if (alert_cod == 6) printf(TXT_yellow"\nTamanho invalido! O telefone deve conter 11 digitos.\n"TXT_reset);
-    else if (alert_cod == 7) printf(TXT_yellow"\nO telefone deve conter apenas numeros.\n"TXT_reset);
-    else if (alert_cod == 8) printf(TXT_red"\nNao e possivel selecionar uma data anterior.\n"TXT_reset);
-    // alerta de processo:
+    else if (alert_cod == 2) printf(TXT_yellow"\nJa esta na pagina inicial!\n"TXT_reset);
+    else if (alert_cod == 3) printf(TXT_yellow"\nJa esta na ultima pagina!\n"TXT_reset);
     else if (alert_cod == 9) printf(TXT_green"\nContato Cadastrado!\n"TXT_reset);
-    else if (alert_cod == -2) printf(TXT_red"\nO cliente possui um aluguel ativo!\n"TXT_reset);
-    else if (alert_cod == -3) printf(TXT_red"\nCadastro cancelado!\n"TXT_reset);
-    else if (alert_cod == -4) printf(TXT_green"\nCadastro apagado!\n"TXT_reset);
-    else if (alert_cod == -5) printf(TXT_red"\nNao ha clientes cadastrados no sistema.\n"TXT_reset);
-    else if (alert_cod == -6) printf(TXT_red"\nERRO! Cliente nao encontrado.\n"TXT_reset);
-    else if (alert_cod == -7) printf(TXT_red"\nArquivo nao encontrado!\n"TXT_reset);
-    else if (alert_cod == -8) printf(TXT_red"\nNao foi possivel concluir o cadastro\n"TXT_reset);
-    else if (alert_cod == -9) printf(TXT_red"\nData Invalida!\n"TXT_reset);
-    else if (alert_cod == -10) printf(TXT_red"\nNao ha alugueis no historico.\n"TXT_reset);
-    else if (alert_cod == -11) printf(TXT_green"\nAluguel criado!\n"TXT_reset);
-    else if (alert_cod == -12) printf(TXT_red"\nAluguel cancelado!\n"TXT_reset);
-    else if (alert_cod == -13) printf(TXT_green"\nDado(s) Atualizado(s)!\n"TXT_reset);
-    else if (alert_cod == -14) printf(TXT_green"\nCarro retirado do sistema com sucesso!\n"TXT_reset);
-    else if (alert_cod == -15) printf(TXT_red"\nNao ha carros cadastrados no sistema.\n"TXT_reset);
-    else if (alert_cod == -16) printf(TXT_red"\nCarro Indisponivel!\n"TXT_reset);
-    else if (alert_cod == -17) printf(TXT_red"\nERRO! Carro nao encotrado.\n"TXT_reset);
-    else if (alert_cod == -18) printf(TXT_red"\nConflito de Data!\n"TXT_reset);
+    // alerta de processo:
+    else if (alert_cod == -1) printf(TXT_red"\nContato nao encontrado na tabela!\n"TXT_reset);
 
     alert(0);    /* reseta marcador */
 }
