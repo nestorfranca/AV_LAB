@@ -33,7 +33,7 @@ int imprimeCatalogo(Contato *arr_contatos, char **catalogo);
 
 char **filtra_busca(Contato *arr_contatos, char *dado_busca);
 
-char **criaCatalogo(Contato *arr_contatos, int n);
+char **criaCatalogo(Contato *arr_contatos);
 
 int contaNomes(char **lista, int origem, char inicial);
 

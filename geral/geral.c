@@ -55,9 +55,9 @@ int teste_input(void)
 {
     char teste[100];
     int i = 0;
-    while ((teste[i] = getchar()) != '\n') i++;
-    teste[i] = '\0';
-    int len = strlen(teste);
+
+    fgets(teste, 100, stdin);
+    int len = strlen(teste) - 1; // remove o '\n' do final da string
 
     if (len == 0)
         return '\n';
@@ -71,7 +71,7 @@ int teste_formato(char *str)
 {
     int i;
     int negativo = 0;
-    for (i = 0; str[i] != '\0'; i++)    /* verifica cada caracter */
+    for (i = 0; str[i] != '\n'; i++)    /* verifica cada caracter */
     {
         if (!(str[i] >= '0' && str[i] <= '9'))  /* verifica se o caracter é numérico */
         {   
@@ -85,7 +85,6 @@ int teste_formato(char *str)
     {
         return -1;          /* é número negativo */
     }
-
     return 1;               /* é número positivo */
 }
 
@@ -124,7 +123,7 @@ int menu_principal(Contato *contatos) {
             while(1) {
                 //cria lista temporária, para visualização:
                 char **lista;
-                lista = criaCatalogo(contatos, TAM);
+                lista = criaCatalogo(contatos);
 
                 cabecalho("\t\t\t\t\t\t", "BUSCAR CONTATOS\t", "");
                 if (imprimeCatalogo(contatos, lista)) break;
@@ -152,7 +151,7 @@ int menu_principal(Contato *contatos) {
 int imprimeCatalogo(Contato *arr_contatos, char **catalogo)
 {
     // variáveis usadas na impressão do catálogo:
-    int inicio_pag[55] = {0};
+    int inicio_pag[70] = {0};
     int id, i, j, letra, qnt_nomes;
     int linhas, colunas, count, count_ant;
     int linhas_por_letra, pagina = 0;
@@ -214,7 +213,7 @@ int imprimeCatalogo(Contato *arr_contatos, char **catalogo)
         }
         
         // marca o início da próxima página:
-        if ((pagina+1) < 55)
+        if ((pagina+1) < 70)
             inicio_pag[pagina+1] = inicio_pag[pagina] + count;
         
 
@@ -226,10 +225,7 @@ int imprimeCatalogo(Contato *arr_contatos, char **catalogo)
         alert_msg();
         printf("\nEscolha uma opcao (ou escreva o nome completo do contato): ");
         
-        i = 0;
-        while ((ch_lista[i] = getchar()) != '\n') i++;
-        ch_lista[i] = '\0';
-
+        fgets(ch_lista, 100, stdin);
         if (strlen(ch_lista) > 0) {                 /* verifica se está vazio */
             if (teste_formato(ch_lista) != 0) {     /* verifica se é um número */
                 op_lista = atoi(ch_lista);
@@ -242,7 +238,8 @@ int imprimeCatalogo(Contato *arr_contatos, char **catalogo)
                         break;
 
                     case 2:
-                        if (pagina < 54)
+                        // verifica se todos os contatos foram impressos:
+                        if ((catalogo[inicio_pag[pagina] + count]) != NULL)
                             pagina++;
                         else
                             alert(3);
@@ -266,25 +263,28 @@ int imprimeCatalogo(Contato *arr_contatos, char **catalogo)
     free(catalogo);
 }
 
-char **criaCatalogo(Contato *arr_contatos, int n)
+char **criaCatalogo(Contato *arr_contatos)
 {
     char **lista_nomes;
     lista_nomes = (char**)malloc(TAM * sizeof(char*));
     if (lista_nomes == NULL) exit(1);
 
-    int i, j;
+    int i, j, count = 0;
     for (i = 0; i < TAM; i++)
     {
-        lista_nomes[i] = (char*)malloc(35 * sizeof(char));
-        if (lista_nomes[i] == NULL) exit(1);
+        if (arr_contatos[i].tag != 0) {
+            lista_nomes[count] = (char*)malloc(35 * sizeof(char));
+            if (lista_nomes[count] == NULL) exit(1);
+
+            lista_nomes[count] = arr_contatos[i].nome;
+            count++;
+        }
         
-        if (arr_contatos[i].tag != 0)
-            lista_nomes[i] = arr_contatos[i].nome;
     }
 
     char *key;
 
-    for (i = 1; i < n; i++) {
+    for (i = 1; i < count; i++) {
         key = lista_nomes[i];
         j = i - 1;
         while (j >= 0 && strcmp(lista_nomes[j], key) > 0) {
@@ -300,9 +300,13 @@ char **criaCatalogo(Contato *arr_contatos, int n)
 int contaNomes(char **lista, int origem, char inicial)
 {
     int i, num_nomes = 0;
-    for (i = origem; lista[i] != NULL; i++)
+    for (i = origem; i < TAM; i++)
     {
+<<<<<<< HEAD
         if (lista[i][0] == inicial) 
+=======
+        if (lista[i] != NULL && lista[i][0] == inicial)
+>>>>>>> bae89303162196a6ef7d6fb20e82e7d8b4a51162
             num_nomes++;
     }   
 
