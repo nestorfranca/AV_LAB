@@ -55,9 +55,9 @@ int teste_input(void)
 {
     char teste[100];
     int i = 0;
-    while ((teste[i] = getchar()) != '\n') i++;
-    teste[i] = '\0';
-    int len = strlen(teste);
+
+    fgets(teste, 100, stdin);
+    int len = strlen(teste) - 1; // remove o '\n' do final da string
 
     if (len == 0)
         return '\n';
@@ -71,7 +71,7 @@ int teste_formato(char *str)
 {
     int i;
     int negativo = 0;
-    for (i = 0; str[i] != '\0'; i++)    /* verifica cada caracter */
+    for (i = 0; str[i] != '\n'; i++)    /* verifica cada caracter */
     {
         if (!(str[i] >= '0' && str[i] <= '9'))  /* verifica se o caracter é numérico */
         {   
@@ -86,7 +86,6 @@ int teste_formato(char *str)
         printf("oi\n");
         return -1;          /* é número negativo */
     }
-
     return 1;               /* é número positivo */
 }
 
@@ -227,10 +226,7 @@ int imprimeCatalogo(Contato *arr_contatos, char **catalogo)
         alert_msg();
         printf("\nEscolha uma opcao (ou escreva o nome completo do contato): ");
         
-        i = 0;
-        while ((ch_lista[i] = getchar()) != '\n') i++;
-        ch_lista[i] = '\0';
-
+        fgets(ch_lista, 100, stdin);
         if (strlen(ch_lista) > 0) {                 /* verifica se está vazio */
             if (teste_formato(ch_lista) != 0) {     /* verifica se é um número */
                 op_lista = atoi(ch_lista);
