@@ -114,7 +114,7 @@ int menu_principal(Contato *contatos) {
         case '2': {
             printf("\nRemovendo Contato...");
             delay(ATRASO);
-
+            remove_contato(contatos);
             break;
         }
         case '3': {
@@ -253,7 +253,8 @@ int imprimeCatalogo(Contato *arr_contatos, char **catalogo)
                         alert(1);   /* opção inválida */
                         break;   
                 }
-            } else {                                /* buscar por nome */
+            } else { 
+                ch_lista[strlen(ch_lista)-1] = '\0';                               /* buscar por nome */
                 posicao = buscarContatos(arr_contatos, ch_lista);
                 if (posicao != -1)
                     contatoConsulta(arr_contatos, posicao);
@@ -325,6 +326,27 @@ void alert_msg(void)
     else if (alert_cod == 9) printf(TXT_green"\nContato Cadastrado!\n"TXT_reset);
     // alerta de processo:
     else if (alert_cod == -1) printf(TXT_red"\nContato nao encontrado na tabela!\n"TXT_reset);
+    else if (alert_cod == -2) printf(TXT_green"\nContato removido com sucesso!\n"TXT_reset);
 
     alert(0);    /* reseta marcador */
+}
+
+void remove_contato(Contato *contatos){
+    char nome_remove[100];
+    int posicao;
+    
+    cabecalho("\t\t\t\t\t\t\t","REMOVENDO CONTATO", "");
+    printf("\nDigite o nome do contato que deseja remover: ");
+
+    fgets(nome_remove, 100, stdin);  
+    nome_remove[strlen(nome_remove)-1] = '\0'; 
+
+    alert_msg();
+    posicao = buscarContatos(contatos, nome_remove);
+    if (posicao != -1){
+        removerContato(contatos, nome_remove);
+        alert(-2);
+    }else{
+        alert(posicao);
+    }
 }
