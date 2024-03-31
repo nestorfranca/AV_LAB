@@ -10,9 +10,10 @@ int main(void) {
     
     int var;
     do {
-        var = menu_principal();
+        var = menu_principal(contatos);
     } while (var != '5');
     
+    // preencheContato(contatos);
 
     // int i;
     // for (i = 0; i < TAM; i++)

@@ -1,3 +1,4 @@
+#include "../hash/hash.h"
 
 /* Funções Exportadas */
 
@@ -14,7 +15,7 @@ void cabecalho(char *pagina, char *titulo);
 /* Função menu_principal 
     Exibe o menu principal.
 */
-int menu_principal(void);
+int menu_principal(Contato *contatos);
 
 /* Função teste_input
     Verifica se o valor é uma string, número positivo ou negativo.

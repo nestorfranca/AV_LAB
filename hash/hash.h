@@ -52,7 +52,7 @@ int totalContatos(Contato *contatos);
 /* Função preencheContato
  - 
 */
-void preencheContato(Contato *contatos, char *nome, char *tel, char *email);
+void preencheContato(Contato *contatos);
 // void preencheContato(Contato *contatos);
 
 /* Função importaContato

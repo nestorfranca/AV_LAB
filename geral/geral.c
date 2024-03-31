@@ -46,9 +46,9 @@ char *clear(void)
 void cabecalho(char *pagina, char *titulo)
 {
     system(clear());
-    printf("==========================================================================================\n");
-    printf("\t%s\t%s\t\t%s\n", pagina, titulo);
-    printf("==========================================================================================\n");
+    printf("===============================================================================\n");
+    printf("\t%s\t%s\t\t\n", pagina, titulo);
+    printf("===============================================================================\n");
 }
 
 int teste_input(void)
@@ -88,10 +88,10 @@ void string_copy(char *dest, char *src)
     dest[i] = '\0';
 }
 
-int menu_principal(void) {
+int menu_principal(Contato *contatos) {
     int opcao;
 
-    cabecalho("\t\t", "MEU INICIAL\t");
+    cabecalho("\t\t", "MENU INICIAL\t");
     
     printf(">>> [1] ADICIONAR\n");
     printf(">>> [2] REMOVER\n");
@@ -107,7 +107,7 @@ int menu_principal(void) {
         case '1':
             printf("\nAdicionando Contato...");
             delay(ATRASO);
-
+            preencheContato(contatos);
             break;
 
         case '2':
@@ -132,7 +132,7 @@ int menu_principal(void) {
             break;
 
         default:
-            alert(1);
+            // alert(1);
             break;
     }
     return opcao;
@@ -159,7 +159,7 @@ void alert_msg(void)
     else if (alert_cod == 7) printf(TXT_yellow"\nO telefone deve conter apenas numeros.\n"TXT_reset);
     else if (alert_cod == 8) printf(TXT_red"\nNao e possivel selecionar uma data anterior.\n"TXT_reset);
     // alerta de processo:
-    else if (alert_cod == -1) printf(TXT_green"\nData atualizada!\n"TXT_reset);
+    else if (alert_cod == 9) printf(TXT_green"\nContato Cadastrado!\n"TXT_reset);
     else if (alert_cod == -2) printf(TXT_red"\nO cliente possui um aluguel ativo!\n"TXT_reset);
     else if (alert_cod == -3) printf(TXT_red"\nCadastro cancelado!\n"TXT_reset);
     else if (alert_cod == -4) printf(TXT_green"\nCadastro apagado!\n"TXT_reset);
