@@ -172,7 +172,7 @@ void importaContato(Contato *contatos)
     fclose(teste); fclose(fl);
 }
 
-int buscar_contatos(Contato* arr_contatos, char* nome)
+int buscarContatos(Contato* arr_contatos, char* nome)
 {
     int chave = geraChave(nome);
     unsigned long long posicao = hash(chave);
@@ -196,7 +196,7 @@ int buscar_contatos(Contato* arr_contatos, char* nome)
 void removerContato(Contato *arr_contatos, char* nome)
 {
     unsigned long long posicao;
-    posicao = buscar_contatos(arr_contatos, nome);
+    posicao = buscarContatos(arr_contatos, nome);
 
     if (posicao != 0) {
         arr_contatos[posicao].tag = 0;

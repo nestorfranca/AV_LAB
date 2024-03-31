@@ -8,10 +8,12 @@ int main(void) {
     inicializaTabela(contatos);
     importaContato(contatos);
     
-    int var;
-    do {
-        var = menu_principal();
-    } while (var != '5');
+
+    imprimeCatalogo(contatos, 1);
+    // int var;
+    // do {
+    //     var = menu_principal();
+    // } while (var != '5');
     
 
     // int i;

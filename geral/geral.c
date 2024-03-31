@@ -67,28 +67,8 @@ int teste_input(void)
     return 0;       /* input invalido */
 }
 
-char *string_upper(char *str)
+int menu_principal(void)
 {
-    int i;
-    for (i = 0; str[i] != '\0'; i++)
-    {
-        str[i] = toupper(str[i]);
-    }
-
-    return str;
-}
-
-void string_copy(char *dest, char *src)
-{
-    int i;
-    for (i = 0; src[i] != '\0'; i++)
-    {
-        dest[i] = src[i];
-    }
-    dest[i] = '\0';
-}
-
-int menu_principal(void) {
     int opcao;
 
     cabecalho("\t\t", "MEU INICIAL\t");
@@ -138,7 +118,178 @@ int menu_principal(void) {
     return opcao;
 }
 
+void imprimeCatalogo(Contato *arr_contatos, int pagina)
+{
+    char **lista;
+    
+    lista = criaCatalogo(arr_contatos, TAM);
+    
+    int letra = 'A';
+    int inicio_pag[20] = {0, 240, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+    int id, i, j/*, id_pag = 240*pagina*/;
+    // while ((letra - 'A') < 26) {
+    int qnt_nomes;
+    int total_linhas = 0, count = 0, count_ant = 0;
+    int linhas_por_letra;
 
+    // count = inicio_pag[pagina]; 
+    while (total_linhas < 40) {
+        
+        printf(TXT_green"\n%c\n"TXT_reset, letra);
+
+        qnt_nomes = contaNomes(lista, inicio_pag[pagina], letra);
+        // printf("%d\n", qnt_nomes);
+        // printf("%d\n", total_linhas);
+
+        if (qnt_nomes > (240 - 6*total_linhas))
+            linhas_por_letra = (240 - 6*total_linhas)/6;
+        else
+            linhas_por_letra = (qnt_nomes/6)+1;
+
+        // printf("%d\n", linhas_por_letra);
+        // printf("%d\n", count);
+        for (i = 0; i < linhas_por_letra; i++)
+        {
+            // printf("%d - ",  i);
+            if (total_linhas == 40) break;
+            
+            // printf("%d - ", id);
+            for (j = 0; j < 6; j++)
+            {
+                id = inicio_pag[pagina] + count_ant + (linhas_por_letra)*j + i;
+                if ((id < TAM) && (lista[id][0] == letra)) {
+                    printf("%-25s", lista[id]);
+                    count++;
+                }
+            }
+            printf("\n");
+            total_linhas++;   
+        }
+        // printf("%d\n", i);
+
+        if (i == linhas_por_letra) {
+            total_linhas += 2;
+            letra++;
+            
+            count_ant = count;
+        }
+        // printf("%d\n", total_linhas);
+
+    }
+    
+    if ((pagina+1) < 20)
+        inicio_pag[pagina+1] = inicio_pag[pagina] + count;
+
+    
+
+
+    // printf("%d", qnt_nomes);
+
+    // int id;
+    // int count = 0;
+    // for (i = 0; i < 40; i++)
+    // {
+    //     if (i < total_linhas) {
+    //         if (id_pag == 0 && i == 0)
+    //             printf(TXT_green"\n%c\n"TXT_reset, letra);
+                        
+    //         // printf("%3d - ", i);
+    //         for (j = 0; j < 6; j++)
+    //         {   
+    //             id = id_pag + total_linhas*j + i + count;
+
+    //             if ((id < TAM) && (lista[id][0] == letra)) {
+    //                 // if (id == 0 || (lista[id][0] != lista[id-1][0])) {
+    //                 //     if ((id != 0) && (lista[id][0] != lista[id-1][0])) letra++;
+                        
+    //                 //     printf(TXT_green"\n%c\n"TXT_reset, letra);
+    //                 // }
+                        
+    //                 printf("%-25s", lista[id]);
+    //             }
+    //         }
+    //         printf("\n");
+        
+    //     } 
+    //     // else {
+    //     //     count = qnt_nomes;
+    //     //     if (i == total_linhas) {
+    //     //         letra++;
+    //     //         printf(TXT_green"\n%c\n"TXT_reset, letra);
+    //     //     }
+
+    //     //     printf("\n");
+            
+    //     //     // printf("%3d - ", i);
+    //     //     for (j = 0; j < 6; j++)
+    //     //     {   
+    //     //         id = count + id_pag + (40 - total_linhas)*j + i;
+
+    //     //         if ((id < TAM) && (lista[id][0] == letra)) {
+    //     //             // if (id == 0 || (lista[id][0] != lista[id-1][0])) {
+    //     //             //     if ((id != 0) && (lista[id][0] != lista[id-1][0])) letra++;
+                        
+    //     //             //     printf(TXT_green"\n%c\n"TXT_reset, letra);
+    //     //             // }
+                        
+    //     //             printf("%-25s", lista[id]);
+    //     //         }
+    //     //     }
+    //     //     // printf("\n");
+    //     // }
+
+
+        
+        
+    //     printf("%d - %-25s\n",i, lista[i]);
+    //     printf("%3d - %-25s %-25s %-25s %-25s\n",i, lista[id_pag + i], lista[id_pag + 40+i], lista[id_pag + 80+i], lista[id_pag + 120+i]);
+    // }
+    
+    free(lista);
+}
+
+char **criaCatalogo(Contato *arr_contatos, int n)
+{
+    char **lista_nomes;
+    lista_nomes = (char**)malloc(TAM * sizeof(char*));
+    if (lista_nomes == NULL) exit(1);
+
+    int i, j;
+    for (i = 0; i < TAM; i++)
+    {
+        lista_nomes[i] = (char*)malloc(35 * sizeof(char));
+        if (lista_nomes[i] == NULL) exit(1);
+        
+        if (arr_contatos[i].tag != 0)
+            lista_nomes[i] = arr_contatos[i].nome;
+    }
+
+    char *key;
+
+    for (i = 1; i < n; i++) {
+        key = lista_nomes[i];
+        j = i - 1;
+        while (j >= 0 && strcmp(lista_nomes[j], key) > 0) {
+            lista_nomes[j + 1] = lista_nomes[j];
+            j = j - 1;
+        }
+        lista_nomes[j + 1] = key;
+    }
+
+    return lista_nomes;
+}
+
+int contaNomes(char **lista, int origem, char inicial)
+{
+    int i, num_nomes = 0;
+    for (i = origem; i < TAM; i++)
+    {
+        if (lista[i][0] == inicial)
+            num_nomes++;
+    }   
+
+    return num_nomes;
+}
 void alert(int cod)
 {
     alert_cod = cod;
