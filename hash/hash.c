@@ -97,6 +97,18 @@ int inserir(Contato *arr_contatos, Contato contato)
     return 1;
 }
 
+int removerContato(Contato *arr_contatos, char *nome)
+{
+    long long posicao;
+    posicao = buscarContatos(arr_contatos, nome);
+    if (posicao > 0) {
+        arr_contatos[posicao].tag = 0;
+        return 1;
+    }
+    return 0;
+    // printf("Contato '%s' não encontrado na tabela.\n", nome);
+}
+
 unsigned long long sondagemQuadratica(unsigned long long posicao, int tentativas)
 {
     int c1 = 29, c2 = 8;
@@ -127,6 +139,7 @@ int totalColisoes(Contato *arr_contatos)
     
     return count;
 }
+
 
 void preencheContato(Contato *arr_contatos)
 {
@@ -286,17 +299,6 @@ int buscarContatos(Contato *arr_contatos, char *nome)
     return -1;
 }
 
-int removerContato(Contato *arr_contatos, char *nome)
-{
-    long long posicao;
-    posicao = buscarContatos(arr_contatos, nome);
-    if (posicao > 0) {
-        arr_contatos[posicao].tag = 0;
-        return 1;
-    }
-    return 0;
-    // printf("Contato '%s' não encontrado na tabela.\n", nome);
-}
 
 int consultaContato(Contato *arr_contatos, int posicao)
 {

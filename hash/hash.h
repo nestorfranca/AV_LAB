@@ -32,7 +32,11 @@ int contadorBit(int num);
  - Adiciona uma nova chave na tabela Hash
 */
 int inserir(Contato *arr_contatos, Contato contato);
-// void inserir(Contato* contatos);
+
+/* Função removerContato
+ - Remove o valor inserido
+*/
+int removerContato(Contato *arr_contatos, char *nome);
 
 /* Função sondagemQuadratica
  - Tratamento de colisãos entre as chaves. Busca uma
@@ -60,24 +64,23 @@ void preencheContato(Contato *arr_contatos);
 */
 int importaContato(Contato *arr_contatos, FILE *fl);
 
-/*
+/* Função atualizaTabela
+ - Em qualquer modificação da tabela HASH, atualiza o
+   arquivo "tabela_hash.txt".
 */
 int atualizaTabela(Contato *arr_contatos);
 
-/*
+/* Função recuperaTabela
+ - Ao iniciar a execução, retoma os dados da tabela HASH,
+   salvos no arquivo "tabela_hash.txt".
 */
 int recuperaTabela(Contato *arr_contatos);
 
 /* Função buscarContato
- - busca e retorna a posição do contato com o nome
+ - Busca e retorna a posição do contato com o nome
    inserido.
 */
 int buscarContatos(Contato* arr_contatos, char *nome);
-
-/* Função removerContato
- - Remove o valor inserido
-*/
-int removerContato(Contato *arr_contatos, char *nome);
 
 /* Função consultaContato
  - Exibe informações individuais sobre os contatos.
