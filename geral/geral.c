@@ -55,9 +55,9 @@ int teste_input(void)
 {
     char teste[100];
     int i = 0;
-
-    fgets(teste, 100, stdin);
-    int len = strlen(teste) - 1; // remove o '\n' do final da string
+    while ((teste[i] = getchar()) != '\n') i++;
+    teste[i] = '\0';
+    int len = strlen(teste); // remove o '\n' do final da string
 
     if (len == 0)
         return '\n';
@@ -71,7 +71,7 @@ int teste_formato(char *str)
 {
     int i;
     int negativo = 0;
-    for (i = 0; str[i] != '\n'; i++)    /* verifica cada caracter */
+    for (i = 0; str[i] != '\0'; i++)    /* verifica cada caracter */
     {
         if (!(str[i] >= '0' && str[i] <= '9'))  /* verifica se o caracter é numérico */
         {   
@@ -89,19 +89,20 @@ int teste_formato(char *str)
 }
 
 int menu_principal(Contato *contatos) {
-    int opcao, op_i;
-    char dado[35];
+    int opcao;
+    char nome_contato[35], ch_op4[3];
+    int num_contatos, num_colisoes;
 
     cabecalho("\t\t\t\t\t\t", "MENU INICIAL\t", "");
     
     printf(">>> [1] ADICIONAR\n");
-    printf(">>> [2] REMOVER\n");
-    printf(">>> [3] BUSCAR\n");
-    printf(">>> [4] TESTE DE COLISAO\n");
+    printf(">>> [2] BUSCAR\n");
+    printf(">>> [3] REMOVER\n");
+    printf(">>> [4] ANALISE DA TABELA HASH\n");
     printf(">>> [5] SAIR\n");
     
     alert_msg();
-    printf("\nEscolha uma opcao: ");
+    printf("Escolha uma opcao: ");
     opcao = teste_input();
 
     switch (opcao) {
@@ -112,12 +113,6 @@ int menu_principal(Contato *contatos) {
             break;
         }
         case '2': {
-            printf("\nRemovendo Contato...");
-            delay(ATRASO);
-            remove_contato(contatos);
-            break;
-        }
-        case '3': {
             printf("\nBuscando Contatos..."); delay(ATRASO);
             
             while(1) {
@@ -125,14 +120,58 @@ int menu_principal(Contato *contatos) {
                 char **lista;
                 lista = criaCatalogo(contatos);
 
-                cabecalho("\t\t\t\t\t\t", "BUSCAR CONTATOS\t", "");
-                if (imprimeCatalogo(contatos, lista)) break;
+                if (lista != NULL) {
+                    cabecalho("\t\t\t\t\t\t", "BUSCAR CONTATOS\t", "");
+                    if (imprimeCatalogo(contatos, lista)) break;
+                } else {
+                    alert(-4);  /* Não há contatos cadastrados. */
+                    break;
+                }
             }
 
             break;
         }
+        case '3': {
+            printf("\nRemovendo Contato...");
+            delay(ATRASO);
+
+            cabecalho("\t\t\t\t\t\t", "REMOVER CONTATO\t", "");
+            alert_msg();
+            printf("Escreva o nome completo do contato: ");
+
+            fgets(nome_contato, 35, stdin);
+            nome_contato[strlen(nome_contato)-1] = '\0';    /* buscar por nome */
+            
+            if (removerContato(contatos, nome_contato))
+                alert(-2);
+            break;
+        }
         case '4': {
-        
+            while (1) {
+                cabecalho("\t\t\t\t\t\t", "TABELA HASH\t", "");
+                num_contatos = totalContatos(contatos);
+                num_colisoes = totalColisoes(contatos);
+                printf("\nPossui %d contatos registrados.\n", num_contatos);
+                printf("Possui %d lacunas.\n", TAM-num_contatos);
+                printf("Ocorreu um total de %d colisoes\n", num_colisoes);
+                
+                // MENU DE OPÇÕES:
+                printf("\n>>> Voltar\n");
+
+                alert_msg();
+                printf("Aperte enter para Retornar ao Menu: ");
+
+
+                int i = 0;
+                while ((ch_op4[i] = getchar()) != '\n') i++;
+                ch_op4[i] = '\0';
+                if (strlen(ch_op4) == 0) {          /* verifica se está vazio */
+                    alert(0);   /* voltando para o menu (sem mensagem de erro) */
+                    break;
+                }
+                else
+                    alert(4);   /* página não solicita entrada */
+            }
             break;
         }
         case '5': {
@@ -223,9 +262,12 @@ int imprimeCatalogo(Contato *arr_contatos, char **catalogo)
         printf(">>>[3] Voltar\n");
 
         alert_msg();
-        printf("\nEscolha uma opcao (ou escreva o nome completo do contato): ");
+        printf("Escolha uma opcao (ou escreva o nome completo do contato): ");
         
         fgets(ch_lista, 100, stdin);
+
+        ch_lista[strlen(ch_lista)-1] = '\0';   /* remove '\n' */
+
         if (strlen(ch_lista) > 0) {                 /* verifica se está vazio */
             if (teste_formato(ch_lista) != 0) {     /* verifica se é um número */
                 op_lista = atoi(ch_lista);
@@ -254,10 +296,9 @@ int imprimeCatalogo(Contato *arr_contatos, char **catalogo)
                         break;   
                 }
             } else { 
-                ch_lista[strlen(ch_lista)-1] = '\0';                               /* buscar por nome */
                 posicao = buscarContatos(arr_contatos, ch_lista);
                 if (posicao != -1)
-                    contatoConsulta(arr_contatos, posicao);
+                    if (consultaContato(arr_contatos, posicao)) break;
             }
         }
     }
@@ -273,7 +314,9 @@ char **criaCatalogo(Contato *arr_contatos)
     int i, j, count = 0;
     for (i = 0; i < TAM; i++)
     {
+        lista_nomes[i] = NULL;
         if (arr_contatos[i].tag != 0) {
+
             lista_nomes[count] = (char*)malloc(35 * sizeof(char));
             if (lista_nomes[count] == NULL) exit(1);
 
@@ -283,19 +326,22 @@ char **criaCatalogo(Contato *arr_contatos)
         
     }
 
-    char *key;
+    if (count > 0) {
+        char *key;
 
-    for (i = 1; i < count; i++) {
-        key = lista_nomes[i];
-        j = i - 1;
-        while (j >= 0 && strcmp(lista_nomes[j], key) > 0) {
-            lista_nomes[j + 1] = lista_nomes[j];
-            j = j - 1;
+        for (i = 1; i < count; i++) {
+            key = lista_nomes[i];
+            j = i - 1;
+            while (j >= 0 && strcmp(lista_nomes[j], key) > 0) {
+                lista_nomes[j + 1] = lista_nomes[j];
+                j = j - 1;
+            }
+            lista_nomes[j + 1] = key;
         }
-        lista_nomes[j + 1] = key;
+        return lista_nomes;
     }
 
-    return lista_nomes;
+    return NULL;
 }
 
 int contaNomes(char **lista, int origem, char inicial)
@@ -323,30 +369,33 @@ void alert_msg(void)
     else if (alert_cod == 1) printf(TXT_yellow"\nInsira uma opcao valida!\n"TXT_reset);
     else if (alert_cod == 2) printf(TXT_yellow"\nJa esta na pagina inicial!\n"TXT_reset);
     else if (alert_cod == 3) printf(TXT_yellow"\nJa esta na ultima pagina!\n"TXT_reset);
-    else if (alert_cod == 9) printf(TXT_green"\nContato Cadastrado!\n"TXT_reset);
+    else if (alert_cod == 4) printf(TXT_yellow"\nPagina nao solicita entrada.\n"TXT_reset);
+    else if (alert_cod == 5) printf(TXT_green"\nContato Cadastrado!\n"TXT_reset);
     // alerta de processo:
     else if (alert_cod == -1) printf(TXT_red"\nContato nao encontrado na tabela!\n"TXT_reset);
     else if (alert_cod == -2) printf(TXT_green"\nContato removido com sucesso!\n"TXT_reset);
+    else if (alert_cod == -3) printf(TXT_red"\nNao foi possivel adicionar contato!\n"TXT_reset);
+    else if (alert_cod == -4) printf(TXT_red"\nNao ha contatos cadastrados!\n"TXT_reset);
 
     alert(0);    /* reseta marcador */
 }
 
-void remove_contato(Contato *contatos){
-    char nome_remove[100];
-    int posicao;
+// void remove_contato(Contato *contatos){
+//     char nome_remove[100];
+//     int posicao;
     
-    cabecalho("\t\t\t\t\t\t\t","REMOVENDO CONTATO", "");
-    printf("\nDigite o nome do contato que deseja remover: ");
+//     cabecalho("\t\t\t\t\t\t\t","REMOVENDO CONTATO", "");
+//     printf("\nDigite o nome do contato que deseja remover: ");
 
-    fgets(nome_remove, 100, stdin);  
-    nome_remove[strlen(nome_remove)-1] = '\0'; 
+//     fgets(nome_remove, 100, stdin);  
+//     nome_remove[strlen(nome_remove)-1] = '\0'; 
 
-    alert_msg();
-    posicao = buscarContatos(contatos, nome_remove);
-    if (posicao != -1){
-        removerContato(contatos, nome_remove);
-        alert(-2);
-    }else{
-        alert(posicao);
-    }
-}
+//     alert_msg();
+//     posicao = buscarContatos(contatos, nome_remove);
+//     if (posicao != -1){
+//         removerContato(contatos, nome_remove);
+//         alert(-2);
+//     }else{
+//         alert(posicao);
+//     }
+// }
