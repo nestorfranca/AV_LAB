@@ -9,7 +9,7 @@ typedef struct contato Contato;
 - Preenche todos os valores de nome dos contatos
   com strings vazias
 */
-void inicializaTabela(Contato* c);
+void inicializaTabela(Contato *arr_contatos);
 
 /* Função geraChave:
  - Gera uma chave para o contato inserido
@@ -31,7 +31,7 @@ int contadorBit(int num);
 /* Função inserir
  - Adiciona uma nova chave na tabela Hash
 */
-void inserir(Contato *arr_contatos, Contato contato, FILE *fl);
+int inserir(Contato *arr_contatos, Contato contato, FILE *fl);
 // void inserir(Contato* contatos);
 
 /* Função sondagemQuadratica
@@ -47,19 +47,18 @@ unsigned long long sondagemQuadratica(unsigned long long posicao, int tentativas
 /* Função totalContato
  - Retorna total de valores inseridos na tabela HASH.
 */
-int totalContatos(Contato *contatos);
+int totalContatos(Contato *arr_contatos);
 
 /* Função preencheContato
- - 
+ - Solicita os dados do contato para adicionar na tabela HASH.
 */
-void preencheContato(Contato *contatos);
-// void preencheContato(Contato *contatos);
+void preencheContato(Contato *arr_contatos);
 
 /* Função importaContato
  - Insere as informações dos contatos de um arquivo
    externo na tabela HASH.
 */
-void importaContato(Contato *contatos);
+void importaContato(Contato *arr_contatos);
 
 /* Função buscarContato
  - busca e retorna a posição do contato com o nome
@@ -70,6 +69,9 @@ int buscarContatos(Contato* arr_contatos, char *nome);
 /* Função removerContato
  - Remove o valor inserido
 */
-void removerContato(Contato *arr_contatos, char *nome);
+int removerContato(Contato *arr_contatos, char *nome);
 
-int contatoConsulta(Contato *arr_contatos, int posicao);
+/* Função consultaContato
+ - Exibe informações individuais sobre os contatos.
+*/
+int consultaContato(Contato *arr_contatos, int posicao);
