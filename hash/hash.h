@@ -31,7 +31,7 @@ int contadorBit(int num);
 /* Função inserir
  - Adiciona uma nova chave na tabela Hash
 */
-int inserir(Contato *arr_contatos, Contato contato, FILE *fl);
+int inserir(Contato *arr_contatos, Contato contato);
 // void inserir(Contato* contatos);
 
 /* Função sondagemQuadratica
@@ -58,7 +58,15 @@ void preencheContato(Contato *arr_contatos);
  - Insere as informações dos contatos de um arquivo
    externo na tabela HASH.
 */
-int importaContato(Contato *arr_contatos);
+int importaContato(Contato *arr_contatos, FILE *fl);
+
+/*
+*/
+int atualizaTabela(Contato *arr_contatos);
+
+/*
+*/
+int recuperaTabela(Contato *arr_contatos);
 
 /* Função buscarContato
  - busca e retorna a posição do contato com o nome

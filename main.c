@@ -6,6 +6,7 @@ Contato contatos[TAM];
 
 int main(void) {
     inicializaTabela(contatos);
+    recuperaTabela(contatos);
     
     int var;
     do {

@@ -75,35 +75,20 @@ int contadorBit(int num)
     return num_bits;
 }
 
-int inserir(Contato *arr_contatos, Contato contato, FILE *fl)
+int inserir(Contato *arr_contatos, Contato contato)
 {
     int chave = geraChave(contato.nome);
     unsigned long long posicao = hash(chave);
     
-    // static int count2 = 0, i = 1;
-
     int count = 0;
     while (arr_contatos[posicao].tag != 0 && count < LIMITE_TESTE) {   
         if (strcmp(arr_contatos[posicao].nome, contato.nome) == 0)
-            break;
+            return 0;
         posicao = sondagemQuadratica(posicao, count);
         count++;
-        // if (count == LIMITE_TESTE)
-        //     count2++;
     }
 
     if (count >= LIMITE_TESTE) return 0;
-    // if (count == limite) {
-    // fprintf(fl, "%s\n", contato.nome);
-    // fprintf(fl, "Tentativas: %d\n\n", count);
-    // fprintf(fl, "%d -  %s\n", i++, contato.nome);
-    // fprintf(fl, "%d - Tentativas: ", i++);
-
-    // fprintf(fl, "%d\n", count2);
-    // fprintf(fl, "%d\n\n", i);
-    // }
-    // printf("%d - %u\n",count, posicao);
-    // printf("%d\n",count2);
 
     arr_contatos[posicao] = contato;
     arr_contatos[posicao].tag = 1;
@@ -146,8 +131,6 @@ int totalColisoes(Contato *arr_contatos)
 void preencheContato(Contato *arr_contatos)
 {
     Contato c;
-    FILE* teste;
-    teste = fopen("teste.txt", "rt+");
     cabecalho("\t\t\t\t\t\t", "CADASTRO\t", "");
     
     char *nome, *tel, *email;
@@ -166,27 +149,22 @@ void preencheContato(Contato *arr_contatos)
     strcpy(c.telefone, tel);
     strcpy(c.email, email);
 
-    if (inserir(arr_contatos, c, teste)) {
+    if (inserir(arr_contatos, c)) {
+        atualizaTabela(arr_contatos);
         
         alert(5);
         alert_msg();
         delay(1000);
     } else
         alert(-3);  /* Não foi possível adicionar contato */
-        
+    
+    
     free(nome); free(tel); free(email);
 }
 
-int importaContato(Contato *arr_contatos)
+int importaContato(Contato *arr_contatos, FILE *fl)
 {
     Contato c;
-
-    FILE *teste = fopen("teste.txt", "wt");
-    FILE *fl = fopen("todosOsContatos.txt", "rt");
-    if (fl == NULL) {
-        printf("Erro ao abrir o arquivo. \n");
-        exit(1);
-    }
 
     char *nome, *tel, *email;
     nome  = (char *)malloc(35 * sizeof(char));
@@ -206,12 +184,85 @@ int importaContato(Contato *arr_contatos)
         strcpy(c.telefone, tel);
         strcpy(c.email, email);
 
-        if (inserir(arr_contatos, c, teste))
+        if (inserir(arr_contatos, c))
             count++;
+    }
+    free(nome); free(tel); free(email);
+    fclose(fl);
+
+    if (count != 0)
+        atualizaTabela(arr_contatos);
+
+    
+    return count;
+}
+
+int atualizaTabela(Contato *arr_contatos)
+{
+    FILE *fl = fopen("tabela_hash.txt", "wt");
+    if (fl == NULL) return 0;
+
+    int i;
+    for (i = 0; i < TAM; i++) {
+        if (arr_contatos[i].tag != 0) {
+            fprintf(fl, "Posicao: %d\n", i);
+            fprintf(fl, "Nome: %s\n", arr_contatos[i].nome);
+            fprintf(fl, "Telefone: %s\n", arr_contatos[i].telefone);
+            fprintf(fl, "Email: %s\n", arr_contatos[i].email);
+            fprintf(fl, "\n");
+        }
+    }
+
+    fclose(fl);
+    return 1;
+}
+
+int recuperaTabela(Contato *arr_contatos)
+{
+    FILE *tabela = fopen("tabela_hash.txt", "rt");
+    if (tabela == NULL) return 0;
+
+    Contato c;
+
+    char *nome, *tel, *email;
+    nome  = (char *)malloc(35 * sizeof(char));
+    tel   = (char *)malloc(25 * sizeof(char));
+    email = (char *)malloc(50 * sizeof(char));
+
+    int i, posicao, count = 0;
+    
+    // ==================================================
+    // move o cursor do arquivo para o fim
+    // e verifica se o arquivo está vazio:
+    fseek(tabela, 0, SEEK_END);
+
+    if (ftell(tabela) != 0) {
+
+        // retorna o cursor ao início do arquivo:
+        rewind(tabela);
+
+        printf("oi");
+        while (!feof(tabela))
+        {   
+            fscanf(tabela, "Posicao: %d\n", &posicao);
+            fscanf(tabela, "Nome: %34[A-Z. a-z]\n", nome);
+            fscanf(tabela, "Telefone: %24[(0-9) -0-9]\n", tel);
+            fscanf(tabela, "Email: %49s\n", email);
+            fscanf(tabela, "\n");
+
+            strcpy(c.nome, nome);
+            strcpy(c.telefone, tel);
+            strcpy(c.email, email);
+
+            if (count < TAM) {
+                arr_contatos[posicao] = c;
+                count++;
+            }
+        }
     }
 
     free(nome); free(tel); free(email);
-    fclose(teste); fclose(fl);
+    fclose(tabela);
     
     return count;
 }

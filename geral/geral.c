@@ -148,7 +148,9 @@ int menu_principal(Contato *contatos) {
         case '4': {
             printf("\nImportados Dados Iniciais para a Tabela...");  delay(ATRASO);
             
-            num_contatos = importaContato(contatos);
+            FILE *dados_iniciais = fopen("todosOsContatos.txt","rt");
+            
+            num_contatos = importaContato(contatos, dados_iniciais);
             if (num_contatos != 0)
                 alert(6);
             else
