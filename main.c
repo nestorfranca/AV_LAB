@@ -6,12 +6,11 @@ Contato contatos[TAM];
 
 int main(void) {
     inicializaTabela(contatos);
-    importaContato(contatos);
     
     int var;
     do {
         var = menu_principal(contatos);
-    } while (var != '5');
+    } while (var != '6');
 
     return 0;
 }

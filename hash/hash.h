@@ -58,7 +58,7 @@ void preencheContato(Contato *arr_contatos);
  - Insere as informações dos contatos de um arquivo
    externo na tabela HASH.
 */
-void importaContato(Contato *arr_contatos);
+int importaContato(Contato *arr_contatos);
 
 /* Função buscarContato
  - busca e retorna a posição do contato com o nome

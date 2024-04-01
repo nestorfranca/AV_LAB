@@ -9,6 +9,7 @@
    TAM = 4096
 */ 
 #define TAM 4096
+// #define TAM 16384
 #define LIMITE_TESTE 1000
 
 typedef struct contato {
@@ -147,7 +148,7 @@ void preencheContato(Contato *arr_contatos)
     Contato c;
     FILE* teste;
     teste = fopen("teste.txt", "rt+");
-    cabecalho("\t\t", "CADASTRO\t", "");
+    cabecalho("\t\t\t\t\t\t", "CADASTRO\t", "");
     
     char *nome, *tel, *email;
     nome  = (char *)malloc(35 * sizeof(char));
@@ -176,7 +177,7 @@ void preencheContato(Contato *arr_contatos)
     free(nome); free(tel); free(email);
 }
 
-void importaContato(Contato *arr_contatos)
+int importaContato(Contato *arr_contatos)
 {
     Contato c;
 
@@ -192,7 +193,7 @@ void importaContato(Contato *arr_contatos)
     tel   = (char *)malloc(25 * sizeof(char));
     email = (char *)malloc(50 * sizeof(char));
 
-    int i;
+    int i, count = 0;
     for (i = 0; i < 10000; i++) {
         if (totalContatos(arr_contatos) == TAM) break;
 
@@ -205,11 +206,14 @@ void importaContato(Contato *arr_contatos)
         strcpy(c.telefone, tel);
         strcpy(c.email, email);
 
-        inserir(arr_contatos, c, teste);
+        if (inserir(arr_contatos, c, teste))
+            count++;
     }
 
     free(nome); free(tel); free(email);
     fclose(teste); fclose(fl);
+    
+    return count;
 }
 
 int buscarContatos(Contato *arr_contatos, char *nome)
@@ -252,8 +256,8 @@ int consultaContato(Contato *arr_contatos, int posicao)
     {
         cabecalho("CATALOGO\t\t\t\t\t", "CONSULTA CONTATO\t", "");
 
-        printf("%-35s\t%-20s\t%-50s\t%-8s\n", "NOME", "TELEFONE", "EMAIL", "COLISOES");
-        printf("%-35s\t%-20s\t%-50s\t%-8d\n", c.nome, c.telefone, c.email, c.colisoes);
+        printf("%-7s\t%-35s\t%-20s\t%-50s\t%-8s\n", "POS", "NOME", "TELEFONE", "EMAIL", "COLISOES");
+        printf("%-7d\t%-35s\t%-20s\t%-50s\t%-8d\n", posicao, c.nome, c.telefone, c.email, c.colisoes);
         printf("\n============================================================================================================================================\n");
         
 
