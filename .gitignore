@@ -54,3 +54,6 @@ dkms.conf
 .vscode/c_cpp_properties.json -text
 .vscode/launch.json -text
 .vscode/settings.json -text
+
+teste.txt
+nomes.txt
