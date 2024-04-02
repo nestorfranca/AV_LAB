@@ -81,11 +81,13 @@ int inserir(Contato *arr_contatos, Contato contato)
     unsigned long long posicao = hash(chave);
     
     int count = 0;
+
     while (arr_contatos[posicao].tag != 0 && count < LIMITE_TESTE) {   
         if (strcmp(arr_contatos[posicao].nome, contato.nome) == 0)
             return 0;
-        posicao = sondagemQuadratica(posicao, count);
+        
         count++;
+        posicao = sondagemQuadratica(posicao, count);
     }
 
     if (count >= LIMITE_TESTE) return 0;
@@ -140,7 +142,6 @@ int totalColisoes(Contato *arr_contatos)
     
     return count;
 }
-
 
 void preencheContato(Contato *arr_contatos)
 {
@@ -234,7 +235,7 @@ int atualizaTabela(Contato *arr_contatos)
 
 int recuperaTabela(Contato *arr_contatos)
 {
-    FILE *tabela = fopen("tabela_hash.txt", "rt");
+    FILE *tabela = fopen("tabela_hash.txt", "rt+");
     if (tabela == NULL) return 0;
 
     Contato c;
@@ -256,7 +257,6 @@ int recuperaTabela(Contato *arr_contatos)
         // retorna o cursor ao início do arquivo:
         rewind(tabela);
 
-        printf("oi");
         while (!feof(tabela))
         {   
             fscanf(tabela, "Posicao: %d\n", &posicao);
