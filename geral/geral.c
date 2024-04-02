@@ -173,7 +173,7 @@ int menu_principal(Contato *contatos) {
                 printf("\n>>> Voltar\n");
 
                 alert_msg();
-                printf("Aperte enter para Retornar ao Menu: ");
+                printf("Aperte ENTER para Retornar ao Menu: ");
 
 
                 int i = 0;

@@ -103,6 +103,7 @@ int removerContato(Contato *arr_contatos, char *nome)
     posicao = buscarContatos(arr_contatos, nome);
     if (posicao > 0) {
         arr_contatos[posicao].tag = 0;
+        atualizaTabela(arr_contatos);
         return 1;
     }
     return 0;
@@ -222,6 +223,7 @@ int atualizaTabela(Contato *arr_contatos)
             fprintf(fl, "Nome: %s\n", arr_contatos[i].nome);
             fprintf(fl, "Telefone: %s\n", arr_contatos[i].telefone);
             fprintf(fl, "Email: %s\n", arr_contatos[i].email);
+            fprintf(fl, "Colisoes: %d\n", arr_contatos[i].colisoes);
             fprintf(fl, "\n");
         }
     }
@@ -242,7 +244,7 @@ int recuperaTabela(Contato *arr_contatos)
     tel   = (char *)malloc(25 * sizeof(char));
     email = (char *)malloc(50 * sizeof(char));
 
-    int i, posicao, count = 0;
+    int i, posicao, colisoes, count = 0;
     
     // ==================================================
     // move o cursor do arquivo para o fim
@@ -261,11 +263,14 @@ int recuperaTabela(Contato *arr_contatos)
             fscanf(tabela, "Nome: %34[A-Z. a-z]\n", nome);
             fscanf(tabela, "Telefone: %24[(0-9) -0-9]\n", tel);
             fscanf(tabela, "Email: %49s\n", email);
+            fscanf(tabela, "Colisoes: %d\n", &colisoes);
             fscanf(tabela, "\n");
 
             strcpy(c.nome, nome);
             strcpy(c.telefone, tel);
             strcpy(c.email, email);
+            c.tag = 1;
+            c.colisoes = colisoes;
 
             if (count < TAM) {
                 arr_contatos[posicao] = c;
