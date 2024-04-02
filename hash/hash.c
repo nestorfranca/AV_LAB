@@ -155,10 +155,13 @@ void preencheContato(Contato *arr_contatos)
 
     printf("Digite o nome: ");
     scanf(" %34[A-Z. a-z]", nome);
-    printf("Digite o telefone (sem \"()\"): ");
-    scanf(" %19[(0-9) -0-9]", tel);
+    fflush(stdin);
+    printf("Digite o telefone (somente numeros): ");
+    scanf(" %24[(0-9) -0-9]", tel);
+    fflush(stdin);
     printf("Digite o email: ");
     scanf(" %49[^\n]", email);
+    fflush(stdin);
 
     strcpy(c.nome, nome);
     strcpy(c.telefone, tel);

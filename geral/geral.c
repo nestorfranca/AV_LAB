@@ -110,6 +110,8 @@ int menu_principal(Contato *contatos) {
         case '1': {
             printf("\nAdicionando Contato..."); delay(ATRASO);
             preencheContato(contatos);
+            
+            delay(200);
             break;
         }
         case '2': {
@@ -128,7 +130,8 @@ int menu_principal(Contato *contatos) {
                     break;
                 }
             }
-
+            
+            delay(ATRASO);
             break;
         }
         case '3': {
@@ -143,6 +146,8 @@ int menu_principal(Contato *contatos) {
             
             if (removerContato(contatos, nome_contato))
                 alert(-2);
+            
+            delay(ATRASO);
             break;
         }
         case '4': {
@@ -156,6 +161,7 @@ int menu_principal(Contato *contatos) {
             else
                 alert(-5);
 
+            delay(ATRASO);
             break;
         }
         case '5': {
@@ -186,6 +192,7 @@ int menu_principal(Contato *contatos) {
                 else
                     alert(4);   /* página não solicita entrada */
             }
+            delay(ATRASO);
             break;
         }
         case '6': {
@@ -195,6 +202,7 @@ int menu_principal(Contato *contatos) {
         }
         default: {
             alert(1);
+            delay(ATRASO);
             break;
         }
     }
